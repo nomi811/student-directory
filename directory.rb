@@ -1,14 +1,14 @@
 @students = []
 
 def input_students
-  puts 'Please enter the names of the students & their cohort.'
+  puts 'Please enter the names of the students, their cohort, their hobby, and country of birth separated by commas'
   puts 'To finish, just hit return twice'
 
   name = STDIN.gets.strip
 
   while !name.empty? do
-    input = name.split(',')
-    @students << { name: input[0], cohort: input[1] }
+    index = name.split(',')
+    @students << { name: index[0], cohort: index[1], hobby: index[2], c_o_b: index[3] }
     @students.length == 1 ? pluralize = 'student' : pluralize = 'students'
     puts "Now we have #{@students.length} #{pluralize}"
     name = STDIN.gets.strip
@@ -23,15 +23,17 @@ end
 
 def print
   counter = 0
+  num = 1
 
   while counter < @students.length
     linewidth = 30
 
     # students.each_with_index do |student, index|
     if @students[counter][:name].downcase.start_with?('b') &&    @students[counter][:name].length < 12
-      cohort_array = @students.map.with_index{ |name, cohort| cohort }
-      cohort_array.sort_by{ |name, cohort| cohort }
-      puts "#{counter + 1}. #{cohort_array[counter][name]} (#{cohort_[counter][cohort]} cohort)".center(linewidth)
+      # cohort_array = @students.map.with_index{ |name, cohort| cohort }
+      # cohort_array.sort_by{ |name, cohort| cohort }
+      puts "#{num}. #{@students[num][:name]} (#{@students[num][:cohort]} cohort)".center(linewidth)
+      num += 1
     end
       counter += 1
     # end
