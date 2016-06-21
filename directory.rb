@@ -1,7 +1,7 @@
 @students = []
 
 def input_students
-  puts 'Please enter the names of the students, their cohort, their hobby, and country of birth separated by commas'
+  puts 'Please enter the names of the students, their cohort, their hobby, and country of birth separated by commas and no spaces.'
   puts 'To finish, just hit return twice'
 
   name = STDIN.gets.strip
@@ -27,14 +27,19 @@ def print
 
   while counter < @students.length
     linewidth = 30
+    name = @students[counter][:name]
+    cohort = @students[counter][:cohort]
+    hobby = @students[counter][:hobby]
+    c_o_b = @students[counter][:c_o_b]
+
 
     # students.each_with_index do |student, index|
-    if @students[counter][:name].downcase.start_with?('b') &&    @students[counter][:name].length < 12
+    if name.downcase.start_with?('b') && name.length < 12
       # cohort_array = @students.map.with_index{ |name, cohort| cohort }
       # cohort_array.sort_by{ |name, cohort| cohort }
-      puts "#{num}. #{@students[counter][:name]} (#{@students[counter][:cohort]} cohort)".ljust(linewidth)
-      puts "Hobby is: #{ @students[counter][:hobby] }".center(linewidth)
-      puts "Country of birth: #{ @students[counter][:c_o_b] }".center(linewidth)
+      puts "#{num}. #{name} (#{cohort} cohort)".ljust(linewidth)
+      puts "Hobby is: #{hobby}".center(linewidth)
+      puts "Country of birth: #{c_o_b}".center(linewidth)
       num += 1
     end
       counter += 1
