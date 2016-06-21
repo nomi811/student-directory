@@ -27,10 +27,10 @@ def print
 
   while counter < @students.length
     linewidth = 30
-    name = @students[counter][:name]
-    cohort = @students[counter][:cohort]
-    hobby = @students[counter][:hobby]
-    c_o_b = @students[counter][:c_o_b]
+    @students[counter][:name] == ' ' ? name = '?' : name = @students[counter][:name]
+    @students[counter][:cohort] == ' ' ? cohort = '?' : cohort = @students[counter][:cohort]
+    @students[counter][:hobby] == ' ' ? hobby = '?' : hobby = @students[counter][:hobby]
+    @students[counter][:c_o_b] == ' ' ? c_o_b = '?' : c_o_b = @students[counter][:c_o_b]
 
 
     # students.each_with_index do |student, index|
@@ -38,8 +38,8 @@ def print
       # cohort_array = @students.map.with_index{ |name, cohort| cohort }
       # cohort_array.sort_by{ |name, cohort| cohort }
       puts "#{num}. #{name} (#{cohort} cohort)".ljust(linewidth)
-      puts "Hobby is: #{hobby}".center(linewidth)
-      puts "Country of birth: #{c_o_b}".center(linewidth)
+      puts "   Hobby is: #{hobby}".ljust(linewidth)
+      puts "   Country of birth: #{c_o_b}".ljust(linewidth)
       num += 1
     end
       counter += 1
