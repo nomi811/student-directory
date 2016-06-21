@@ -1,38 +1,53 @@
+@students = []
+
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
+  puts 'Please enter the names of the students & their cohort.'
+  puts 'To finish, just hit return twice'
 
-  students = []
-
-  name = gets.chomp
+  name = STDIN.gets.strip
 
   while !name.empty? do
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
-    name = gets.chomp
+    input = name.split(',')
+    @students << { name: input[0], cohort: input[1] }
+    @students.length == 1 ? pluralize = 'student' : pluralize = 'students'
+    puts "Now we have #{@students.length} #{pluralize}"
+    name = STDIN.gets.strip
   end
-  students
+  @students
 end
 
 def print_header
-  puts "The students of Villains Academy"
-  puts "----------------------"
+  puts 'The students of Villains Academy'
+  puts '-------------------------------------'
 end
 
-def print(students)
-  students.each_with_index do |student, index|
-    puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+def print
+  counter = 0
+
+  while counter < @students.length
+    linewidth = 30
+
+    # students.each_with_index do |student, index|
+    if @students[counter][:name].downcase.start_with?('b') &&    @students[counter][:name].length < 12
+      cohort_array = @students.map.with_index{ |name, cohort| cohort }
+      cohort_array.sort_by{ |name, cohort| cohort }
+      puts "#{counter + 1}. #{cohort_array[counter][name]} (#{cohort_[counter][cohort]} cohort)".center(linewidth)
+    end
+      counter += 1
+    # end
   end
 end
 
-def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+def print_footer
+  puts "Overall, we have #{@students.count} great students"
 end
 
-students = input_students
+@students = input_students
+
 print_header
-print(students)
-print_footer(students)
+print
+
+print_footer
 
 =begin
 students = [
