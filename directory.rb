@@ -32,7 +32,9 @@ def print
     if @students[counter][:name].downcase.start_with?('b') &&    @students[counter][:name].length < 12
       # cohort_array = @students.map.with_index{ |name, cohort| cohort }
       # cohort_array.sort_by{ |name, cohort| cohort }
-      puts "#{num}. #{@students[num][:name]} (#{@students[num][:cohort]} cohort)".center(linewidth)
+      puts "#{num}. #{@students[counter][:name]} (#{@students[counter][:cohort]} cohort)".ljust(linewidth)
+      puts "Hobby is: #{ @students[counter][:hobby] }".center(linewidth)
+      puts "Country of birth: #{ @students[counter][:c_o_b] }".center(linewidth)
       num += 1
     end
       counter += 1
