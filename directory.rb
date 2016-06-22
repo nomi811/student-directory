@@ -1,5 +1,29 @@
 @students = []
 
+def interactive_menu
+
+  loop do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+
+    selection = gets.chomp
+
+    case selection
+    when "1"
+      @students = input_students
+    when "2"
+      print_header
+      print
+      print_footer
+    when "9"
+      exit
+    else
+      puts "I don't know what you meant, try again"
+    end
+  end
+end
+
 def input_students
   puts 'Please enter the names of the students, their cohort, their hobby, and country of birth separated by commas and no spaces.'
   puts 'To finish, just hit return twice'
@@ -14,29 +38,30 @@ def input_students
     name = STDIN.gets.strip
   end
   @students
+
+  @cohort_array = @students.sort_by { |i| i[1] }
+
 end
 
 def print_header
-  puts 'The students of Villains Academy'
-  puts '-------------------------------------'
+  if @students.length == 1
+    puts 'The students of Villains Academy'
+    puts '-------------------------------------'
+  end
 end
 
 def print
   counter = 0
   num = 1
 
-  while counter < @students.length
+  while counter < @cohort_array.length
     linewidth = 30
-    @students[counter][:name] == ' ' ? name = '?' : name = @students[counter][:name]
-    @students[counter][:cohort] == ' ' ? cohort = '?' : cohort = @students[counter][:cohort]
-    @students[counter][:hobby] == ' ' ? hobby = '?' : hobby = @students[counter][:hobby]
-    @students[counter][:c_o_b] == ' ' ? c_o_b = '?' : c_o_b = @students[counter][:c_o_b]
-
-
+    @cohort_array[counter][:name] == ' ' ? name = '?' : name = @cohort_array[counter][:name]
+    @cohort_array[counter][:cohort] == ' ' ? cohort = '?' : cohort = @cohort_array[counter][:cohort]
+    @cohort_array[counter][:hobby] == ' ' ? hobby = '?' : hobby = @cohort_array[counter][:hobby]
+    @cohort_array[counter][:c_o_b] == ' ' ? c_o_b = '?' : c_o_b = @cohort_array[counter][:c_o_b]
     # students.each_with_index do |student, index|
-    if name.downcase.start_with?('b') && name.length < 12
-      # cohort_array = @students.map.with_index{ |name, cohort| cohort }
-      # cohort_array.sort_by{ |name, cohort| cohort }
+    if name.downcase.start_with?('b') && name.length < 12 && cohort == 'feb'
       puts "#{num}. #{name} (#{cohort} cohort)".ljust(linewidth)
       puts "   Hobby is: #{hobby}".ljust(linewidth)
       puts "   Country of birth: #{c_o_b}".ljust(linewidth)
@@ -48,15 +73,13 @@ def print
 end
 
 def print_footer
-  puts "Overall, we have #{@students.count} great students"
+  if @students.length == 1
+    puts "Overall, we have #{@students.count} great students"
+  end
 end
 
-@students = input_students
 
-print_header
-print
-
-print_footer
+interactive_menu
 
 =begin
 students = [
