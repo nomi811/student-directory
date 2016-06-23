@@ -88,29 +88,32 @@ def save_students
   file.close
 end
 
+def read_file
+  file = File.open(@filename, "r")
+  file.readlines.each do |line|
+    @name, @cohort = line.chomp.split(',')
+    create_students_array
+  end
+end
+
 def load_students(filename = @filename)
-  puts "What file would you like to load?"
-  @filename = STDIN.gets.chomp
   if @filename.nil?
-    load_students("students.csv")
+    puts "What file would you like to load?"
+    @filename = STDIN.gets.chomp
+    read_file
 
   else
-    file = File.open(@filename, "r")
-    file.readlines.each do |line|
-      @name, @cohort = line.chomp.split(',')
-      create_students_array
-    end
-    puts "#{@students.length} students' data loaded into #{@filename}"
-    puts
-    puts
-    #file.close
+    read_file
   end
+  puts "#{@students.length} students' data loaded into #{@filename}"
+  puts
+  puts
 end
 
 def try_load_students
   @filename = ARGV.first
   if @filename.nil?
-    load_students("students.csv")
+    load_students(@filename = "students.csv")
 
   elsif File.exists?(@filename)
     load_students(@filename)
