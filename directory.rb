@@ -24,7 +24,7 @@ def process(selection)
   when "3"
     save_students
   when "4"
-    load_students(filename)
+    load_students(@filename)
   when "9"
     exit
     puts "I don't know what you meant, try again"
@@ -75,45 +75,50 @@ end
 
 def save_students
   puts "What file would you like to save?"
-  filename = STDIN.gets.chomp
-  file = File.open("students.csv", "w")
+  @filename = STDIN.gets.chomp
+  file = File.open(@filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
-  puts "#{@students.length} students' data saved in #{filename}"
+  puts "#{@students.length} students' data saved in #{@filename}"
   puts
   puts
   file.close
 end
 
-def load_students(filename)
+def load_students(filename = @filename)
   puts "What file would you like to load?"
-  filename = STDIN.gets.chomp
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    @name, @cohort = line.chomp.split(',')
-    create_students_array
+  @filename = STDIN.gets.chomp
+  if @filename.nil?
+    load_students("students.csv")
+
+  else
+    file = File.open(@filename, "r")
+    file.readlines.each do |line|
+      @name, @cohort = line.chomp.split(',')
+      create_students_array
+    end
+    puts "#{@students.length} students' data loaded into #{@filename}"
+    puts
+    puts
+    #file.close
   end
-  puts "#{@students.length} students' data loaded into #{filename}"
-  puts
-  puts
-  file.close
 end
 
 def try_load_students
-  filename = ARGV.first
-  if filename.nil?
+  @filename = ARGV.first
+  if @filename.nil?
     load_students("students.csv")
 
-  elsif File.exists?(filename)
-    load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
+  elsif File.exists?(@filename)
+    load_students(@filename)
+    puts "Loaded #{@students.count} from #{@filename}"
     puts
     puts
   else
-    puts "Sorry, #{filename} doesn't exist."
+    puts "Sorry, #{@filename} doesn't exist."
     puts
     puts
     exit
