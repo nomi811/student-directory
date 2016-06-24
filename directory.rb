@@ -4,14 +4,13 @@ require 'csv'
 def print_menu
   puts '1. Input the students'
   puts '2. Show the students'
-  puts '3. Save the list to students.csv'
-  puts '4. Load the list from students.csv'
+  puts '3. Save the student list'
+  puts '4. Load the student list'
   puts '9. Exit'
 end
 
 def interactive_menu
   loop do
-    try_load_students
     print_menu
     process(STDIN.gets.chomp)
   end
@@ -28,6 +27,7 @@ def process(selection)
   when '4'
     load_students
   when '9'
+    show_executed_names
     exit
     puts "I don't know what you meant, try again"
   end
@@ -35,6 +35,10 @@ end
 
 def create_students_array
   @students << { name: @name, cohort: @cohort }
+end
+
+def check_plurals
+  @students.length == 1 ? @pluralize = 'student' : @pluralize = 'students'
 end
 
 def input_students
@@ -46,8 +50,8 @@ def input_students
   until @name.empty?
     @name, @cohort = @name.split(',')
     create_students_array
-    puts "Now we have #{@students.count} students"
-
+    check_plurals
+    puts "Now we have #{@students.count} #{@pluralize}"
     @name = STDIN.gets.chomp
   end
 end
@@ -60,7 +64,7 @@ end
 
 def print_header
   puts 'The students of Villains Academy'
-  puts '-------------'
+  puts '-------------------------------------'
 end
 
 def print_student_list
@@ -70,13 +74,14 @@ def print_student_list
 end
 
 def print_footer
-  puts "Overall, we have #{@students.count} great students"
+  check_plurals
+  puts "Overall, we have #{@students.count} great #{@pluralize}"
   puts
   puts
 end
 
 def save_students
-  puts 'What file would you like to save?'
+  puts 'What file would you like to save your input into?'
   savefile = gets.chomp
   savefile = 'students.csv' if savefile == ''
   CSV.open(savefile, 'a+') do |csv|
@@ -88,42 +93,31 @@ def save_students
   puts
   puts
 end
-=begin
-def read_file
-  #file = CSV.read('students.csv')
-  #file = File.open(@filename, "r")
-  #file.each do |line|
 
-  #@name, @cohort = line.chomp.split(',')     #chomp.split(',')
-      #create_students_array
-  #end
-  puts file
-end
-=end
 def load_students(*)
-  puts 'What file would you like to load?'
-  loadfile = gets.chomp
-  #loadfile = 'students.csv' if loadfile == ''
-  CSV.foreach(loadfile) do |row|
-    @name, @cohort = row
-    # create_students_array
-    puts row.inspect
-    @students << { name: @name, cohort: @cohort }
+  loadname = @filename
+
+  if loadname.nil?
+    puts 'What file would you like to load?'
+    loadname = gets.chomp
+    loadname = 'students.csv' if loadname == ''
+  else
+    CSV.foreach(loadname) do |row|
+      @name, @cohort = row
+      create_students_array
+    end
+
   end
-  puts "#{@students.length} students' data loaded into #{loadfile}"
+  puts "#{@students.length} students' data loaded into #{loadname}"
   puts
   puts
 end
 
 def try_load_students
-  filename = ARGV.first
-  return if filename.nil?
-
-  if File.exist?(filename)
-    load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
-    puts
-    puts
+  @filename = ARGV.first
+  return if @filename.nil?
+  if File.exist?(@filename)
+    load_students(@filename)
   else
     puts "Sorry, #{filename} doesn't exist."
     puts
@@ -132,21 +126,13 @@ def try_load_students
   end
 end
 
+def show_executed_names
+  computer_path = File.expand_path(File.dirname(File.dirname(__FILE__)))
+  executed_file = File.basename(__FILE__)
+  puts "The computer path is #{computer_path} and the executed_file is #{executed_file}"
+end
+
+
+
+try_load_students
 interactive_menu
-
-
-=begin
-students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
-]
-=end
