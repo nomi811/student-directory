@@ -11,6 +11,7 @@ end
 
 def interactive_menu
   loop do
+    #try_load_students
     print_menu
     process(STDIN.gets.chomp)
   end
@@ -29,6 +30,7 @@ def process(selection)
   when '9'
     show_executed_names
     exit
+  else
     puts "I don't know what you meant, try again"
   end
 end
@@ -76,50 +78,48 @@ end
 def print_footer
   check_plurals
   puts "Overall, we have #{@students.count} great #{@pluralize}"
-  puts
-  puts
 end
 
 def save_students
   puts 'What file would you like to save your input into?'
   savefile = gets.chomp
+  puts "savefile #{savefile}"
   savefile = 'students.csv' if savefile == ''
+  puts savefile
   CSV.open(savefile, 'a+') do |csv|
     @students.each do |student|
       csv << [student[:name], student[:cohort]]
     end
   end
+  puts savefile
   puts "#{@students.length} students' data saved in #{savefile}"
-  puts
-  puts
 end
 
-def load_students(*)
-  loadname = @filename
-
+def load_students(loadname = 'students.csv')
   if loadname.nil?
     puts 'What file would you like to load?'
+    puts "loadname load_students 1 #{loadname}"
     loadname = gets.chomp
-    loadname = 'students.csv' if loadname == ''
+    puts "loadname #{loadname}"
   else
+    loadname = 'students.csv'
+    puts "loadname not nil #{loadname}"
     CSV.foreach(loadname) do |row|
       @name, @cohort = row
       create_students_array
     end
-
   end
   puts "#{@students.length} students' data loaded into #{loadname}"
-  puts
-  puts
 end
 
 def try_load_students
-  @filename = ARGV.first
-  return if @filename.nil?
-  if File.exist?(@filename)
-    load_students(@filename)
+  filename = ARGV.first
+  puts "filename: #{filename}"
+  return if filename.nil?
+  if File.exist?(filename)
+    load_students(filename)
   else
-    puts "Sorry, #{filename} doesn't exist."
+    puts "Sorry, #{@filename} doesn't exist."
     puts
     puts
     exit
