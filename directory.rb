@@ -11,7 +11,6 @@ end
 
 def interactive_menu
   loop do
-    #try_load_students
     print_menu
     process(STDIN.gets.chomp)
   end
@@ -35,8 +34,13 @@ def process(selection)
   end
 end
 
-def create_students_array
-  @students << { name: @name, cohort: @cohort }
+def create_students_array(row)
+  if row.is_a?(String)
+    name, cohort = row.chomp.split(',')
+  else
+    name, cohort = row
+  end
+  @students << { name: name, cohort: cohort.to_sym }
 end
 
 def check_plurals
@@ -47,14 +51,13 @@ def input_students
   puts 'Please enter the names of the students'
   puts 'To finish, just hit return twice'
 
-  @name = STDIN.gets.chomp
+  name = STDIN.gets.chomp
 
-  until @name.empty?
-    @name, @cohort = @name.split(',')
-    create_students_array
+  until name.empty?
+    create_students_array("#{name},November")
     check_plurals
     puts "Now we have #{@students.count} #{@pluralize}"
-    @name = STDIN.gets.chomp
+    name = STDIN.gets.chomp
   end
 end
 
@@ -80,50 +83,40 @@ def print_footer
   puts "Overall, we have #{@students.count} great #{@pluralize}"
 end
 
+def insert_filename
+  filename = ''
+  while filename == ''
+    puts 'Please enter file name.'
+    filename = STDIN.gets.chomp
+  end
+  filename
+end
+
 def save_students
-  puts 'What file would you like to save your input into?'
-  savefile = gets.chomp
-  puts "savefile #{savefile}"
-  savefile = 'students.csv' if savefile == ''
-  puts savefile
-  CSV.open(savefile, 'a+') do |csv|
+  filename = insert_filename
+  CSV.open(filename, 'wb') do |csv|
     @students.each do |student|
       csv << [student[:name], student[:cohort]]
     end
   end
-  puts savefile
-  puts "#{@students.length} students' data saved in #{savefile}"
+  puts "#{@students.length} students' data saved in #{filename}"
 end
 
-def load_students(loadname = 'students.csv')
-  if loadname.nil?
-    puts 'What file would you like to load?'
-    puts "loadname load_students 1 #{loadname}"
-    loadname = gets.chomp
-    puts "loadname #{loadname}"
-  else
-    loadname = 'students.csv'
-    puts "loadname not nil #{loadname}"
-    CSV.foreach(loadname) do |row|
-      @name, @cohort = row
-      create_students_array
+def load_students(filename = nil)
+  filename = filename.nil? ? insert_filename : filename
+  if File.exists?(filename)
+    CSV.foreach(filename) do |row|
+      create_students_array(row)
     end
+    puts "#{@students.length} students' data loaded into #{filename}"
+  else
+    puts "no file by that name."
   end
-  puts "#{@students.length} students' data loaded into #{loadname}"
 end
 
 def try_load_students
-  filename = ARGV.first
-  puts "filename: #{filename}"
-  return if filename.nil?
-  if File.exist?(filename)
-    load_students(filename)
-  else
-    puts "Sorry, #{@filename} doesn't exist."
-    puts
-    puts
-    exit
-  end
+  filename = ARGV.first || 'students.csv'
+  load_students(filename)
 end
 
 def show_executed_names
